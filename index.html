@@ -203,10 +203,6 @@
   }
 
   /* Scroll progress bar - NEW */
-  @keyframes progressGrow {
-    0%{ transform:scaleX(0); }
-    100%{ transform:scaleX(1); }
-  }
   .progress-bar{
     position:fixed;
     top:0;
@@ -215,19 +211,7 @@
     background:linear-gradient(90deg, var(--gold), var(--gold-light));
     transform-origin:left;
     z-index:1000;
-    animation:progressGrow 0.1s linear forwards;
-  }
-
-  /* Floating elements - NEW */
-  @keyframes floatAround {
-    0%{ transform:translate(0,0) rotate(0deg); }
-    25%{ transform:translate(20px,-30px) rotate(5deg); }
-    50%{ transform:translate(-10px,-50px) rotate(-3deg); }
-    75%{ transform:translate(15px,-20px) rotate(4deg); }
-    100%{ transform:translate(0,0) rotate(0deg); }
-  }
-  .float-element{
-    animation:floatAround 8s ease-in-out infinite;
+    transition:transform 0.1s linear;
   }
 
   /* ===== EXISTING STYLES (kept) ===== */
@@ -274,7 +258,7 @@
   .frame img{
     width:100%; height:auto; max-height:82vh;
     display:block; margin:0 auto;
-    object-fit:contain; /* shows the whole photo, nothing cropped off */
+    object-fit:contain;
   }
   .frame .cap{ margin-top:10px; text-align:center; font-style:italic; color:#8a7a6c; font-size:.95rem; }
 
@@ -346,63 +330,117 @@
   .candle-msg{ min-height:1.6em; font-style:italic; color:var(--gold-light); }
   .confetti-piece{ position:fixed; top:-10px; width:8px; height:8px; z-index:50; pointer-events:none; }
 
+  /* ===== GALLERY - RESPONSIVE & BALANCED ===== */
   .g-grid{
     display:grid;
     grid-template-columns:repeat(6, 1fr);
-    grid-auto-rows:160px;
+    grid-auto-rows:200px;
     grid-auto-flow:dense;
-    gap:14px;
+    gap:16px;
     margin-top:48px;
   }
+
   .g-item{
-    position:relative; overflow:hidden; background:#fff;
+    position:relative;
+    overflow:hidden;
+    background:#fff;
     border:1px solid rgba(180,137,47,.18);
     cursor:pointer;
     transition:transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease;
+    border-radius:4px;
   }
-  .g-item:hover{ transform:translateY(-6px); box-shadow:0 24px 40px -20px rgba(75,27,35,.35); z-index:2; }
-  .g-item img, .g-item video{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .7s ease; }
-  .g-item:hover img, .g-item:hover video{ transform:scale(1.07); }
+  .g-item:hover{
+    transform:translateY(-6px) scale(1.01);
+    box-shadow:0 24px 40px -20px rgba(75,27,35,.35);
+    z-index:2;
+  }
+  .g-item img, .g-item video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform .7s ease;
+  }
+  .g-item:hover img, .g-item:hover video{
+    transform:scale(1.06);
+  }
 
+  /* Size classes */
   .g-w2{ grid-column:span 2; }
   .g-w3{ grid-column:span 3; }
   .g-h2{ grid-row:span 2; }
   .g-h3{ grid-row:span 3; }
 
+  /* Caption overlay */
   .g-cap{
-    position:absolute; left:0; right:0; bottom:0; padding:14px 16px;
-    background:linear-gradient(0deg, rgba(43,35,32,.78), transparent 70%);
-    color:#fff; font-style:italic; font-size:.88rem;
-    opacity:0; transition:opacity .4s ease;
+    position:absolute;
+    left:0; right:0; bottom:0;
+    padding:16px 20px;
+    background:linear-gradient(0deg, rgba(43,35,32,.8), transparent 70%);
+    color:#fff;
+    font-style:italic;
+    font-size:.95rem;
+    opacity:0;
+    transition:opacity .4s ease;
     pointer-events:none;
+    letter-spacing:0.3px;
+    font-family:'Cormorant Garamond', serif;
   }
   .g-item:hover .g-cap{ opacity:1; }
 
+  /* Play button */
   .play-badge{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    background:rgba(43,35,32,.12); transition:opacity .3s ease, background .3s ease;
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(43,35,32,.12);
+    transition:opacity .3s ease, background .3s ease;
   }
-  .play-badge svg{ filter:drop-shadow(0 2px 6px rgba(0,0,0,.45)); transition:transform .3s ease; }
-  .g-item:hover .play-badge{ background:rgba(43,35,32,.22); }
-  .g-item:hover .play-badge svg{ transform:scale(1.12); }
+  .play-badge svg{
+    filter:drop-shadow(0 2px 8px rgba(0,0,0,.5));
+    transition:transform .3s ease;
+  }
+  .g-item:hover .play-badge{
+    background:rgba(43,35,32,.22);
+  }
+  .g-item:hover .play-badge svg{
+    transform:scale(1.12);
+  }
   .play-badge.playing{ opacity:0; }
   .g-item:hover .play-badge.playing{ opacity:1; background:rgba(43,35,32,.1); }
 
-  .g-more{
-    display:flex; align-items:center; justify-content:center; flex-direction:column;
-    background:var(--parchment); border:1px dashed rgba(110,42,53,.4);
-    color:var(--wine); font-family:'Jost',sans-serif; font-size:11px;
-    letter-spacing:.18em; text-transform:uppercase; text-align:center; padding:10px;
+  /* ===== RESPONSIVE BREAKPOINTS ===== */
+  @media (max-width: 992px){
+    .g-grid{
+      grid-auto-rows:180px;
+      gap:14px;
+    }
   }
 
-  @media (max-width: 860px){
-    .g-grid{ grid-template-columns:repeat(4,1fr); grid-auto-rows:140px; }
+  @media (max-width: 768px){
+    .g-grid{
+      grid-template-columns:repeat(4, 1fr);
+      grid-auto-rows:160px;
+      gap:12px;
+    }
     .g-w3{ grid-column:span 4; }
+    .g-h3{ grid-row:span 2; }
   }
-  @media (max-width: 560px){
-    .g-grid{ grid-template-columns:repeat(2,1fr); grid-auto-rows:220px; gap:10px; }
+
+  @media (max-width: 480px){
+    .g-grid{
+      grid-template-columns:repeat(2, 1fr);
+      grid-auto-rows:200px;
+      gap:10px;
+    }
     .g-w2, .g-w3{ grid-column:span 2; }
     .g-h2, .g-h3{ grid-row:span 1; }
+    .g-cap{
+      font-size:.8rem;
+      padding:12px 14px;
+    }
   }
 
   .letter-wrap{ background:var(--wine); padding:90px 20px; }
@@ -450,10 +488,10 @@
 <div class="petal-field" id="petalField"></div>
 <div class="heart-field" id="heartField"></div>
 
-<!-- Progress Bar - NEW -->
+<!-- Progress Bar -->
 <div class="progress-bar" id="progressBar"></div>
 
-<!-- Sparkles - NEW -->
+<!-- Sparkles -->
 <div id="sparkleContainer"></div>
 
 <header class="hero">
@@ -511,73 +549,82 @@
   </svg>
 </div>
 
+<!-- ===== GALLERY SECTION - REARRANGED FOR BALANCE ===== -->
 <section id="gallery" class="wrap" style="padding:90px 24px;">
   <h3 class="reveal display shimmer-text" style="text-align:center; font-size:clamp(2rem,4vw,2.8rem); font-weight:500;">Look at God's beautiful creation, a masterpiece</h3>
-  <p class="reveal reveal-delay-1" style="text-align:center; color:#8a7a6c; font-style:italic; margin-top:8px;">Perfection in all forms, I am sure God looks at you and takes pride in what he has made</p>
+  <p class="reveal reveal-delay-1" style="text-align:center; color:#8a7a6c; font-style:italic; margin-top:8px; font-size:1.05rem;">Perfection in all forms, I am sure God looks at you and takes pride in what he has made</p>
 
   <div class="g-grid" id="galleryGrid">
 
+    <!-- Row 1: Featured images - balanced mix of portrait & landscape -->
     <div class="g-item reveal g-w2 g-h2">
       <img src="assets/images/WhatsApp%20Image%202026-07-22%20at%2020.40.09.jpeg" alt="Memory">
-      <div class="g-cap">perfection</div>
+      <div class="g-cap">✨ Perfection</div>
     </div>
 
-    <div class="g-item reveal reveal-delay-1 g-h2">
+    <div class="g-item reveal reveal-delay-1 g-w2 g-h3">
+      <img src="assets/images/WhatsApp%20Image%202026-07-25%20at%2019.25.48.jpeg" alt="Memory">
+      <div class="g-cap">🌸 Beautiful, Just Beautiful</div>
+    </div>
+
+    <div class="g-item reveal reveal-delay-2 g-w2 g-h2">
+      <img src="assets/images/charming.jpeg" alt="Memory">
+      <div class="g-cap">💫 Embodiment of beauty</div>
+    </div>
+
+    <!-- Row 2: Videos with varying heights -->
+    <div class="g-item reveal reveal-delay-1 g-w2 g-h2">
       <video loop playsinline preload="metadata">
         <source src="assets/images/aura.mp4" type="video/mp4">
       </video>
       <div class="play-badge">
         <svg width="34" height="34" fill="#fff" viewBox="0 0 20 20"><path d="M6.3 2.8A1.5 1.5 0 004 4.1v11.8a1.5 1.5 0 002.3 1.3l9.3-5.9a1.5 1.5 0 000-2.5L6.3 2.8z"/></svg>
       </div>
-      <div class="g-cap">Steeze</div>
+      <div class="g-cap">🎬 Steeze</div>
     </div>
 
-    <div class="g-item reveal reveal-delay-2 g-h3 g-w2">
-      <img src="assets/images/WhatsApp Image 2026-07-25 at 19.25.48.jpeg" alt="Memory">
-      <div class="g-cap">Beautiful, Just Beautiful</div>
-    </div>
-
-    <div class="g-item reveal reveal-delay-2 g-w3 g-h2">
-      <img src="assets/images/charming.jpeg" alt="Memory">
-      <div class="g-cap">Embodiment of beauty</div>
-    </div>
-
-    <div class="g-item reveal reveal-delay-3 g-h3">
+    <div class="g-item reveal reveal-delay-2 g-w2 g-h3">
       <video loop playsinline preload="metadata">
         <source src="assets/images/littt.mp4" type="video/mp4">
       </video>
       <div class="play-badge">
         <svg width="34" height="34" fill="#fff" viewBox="0 0 20 20"><path d="M6.3 2.8A1.5 1.5 0 004 4.1v11.8a1.5 1.5 0 002.3 1.3l9.3-5.9a1.5 1.5 0 000-2.5L6.3 2.8z"/></svg>
       </div>
-      <div class="g-cap">Aura</div>
+      <div class="g-cap">🌟 Aura</div>
     </div>
 
-    <div class="g-item reveal reveal-delay-3 g-h3 g-w2">
+    <div class="g-item reveal reveal-delay-3 g-w2 g-h2">
       <video loop playsinline preload="metadata">
         <source src="assets/images/WhatsApp%20Video%202026-07-25%20at%2019.26.43.mp4" type="video/mp4">
       </video>
       <div class="play-badge">
         <svg width="34" height="34" fill="#fff" viewBox="0 0 20 20"><path d="M6.3 2.8A1.5 1.5 0 004 4.1v11.8a1.5 1.5 0 002.3 1.3l9.3-5.9a1.5 1.5 0 000-2.5L6.3 2.8z"/></svg>
       </div>
-      <div class="g-cap">swap in your video</div>
+      <div class="g-cap">✨ Charming</div>
     </div>
 
-    <div class="g-item reveal reveal-delay-4 g-h2">
-      <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?q=80&w=500" alt="Memory">
-      <div class="g-cap">laughing together</div>
+    <!-- Row 3: Supporting images -->
+    <div class="g-item reveal reveal-delay-3 g-w2 g-h2">
+      <video loop playsinline preload="metadata">
+        <source src="assets/images/classyyy.mp4" type="video/mp4">
+      </video>
+      <div class="play-badge">
+        <svg width="34" height="34" fill="#fff" viewBox="0 0 20 20"><path d="M6.3 2.8A1.5 1.5 0 004 4.1v11.8a1.5 1.5 0 002.3 1.3l9.3-5.9a1.5 1.5 0 000-2.5L6.3 2.8z"/></svg>
+      </div>
+      <div class="g-cap">👑 Classy</div>
     </div>
 
-    <div class="g-item reveal reveal-delay-4 g-h3 g-w2">
-      <img src="https://images.unsplash.com/photo-1518173946687-a4c803333984?q=80&w=600" alt="Memory">
-      <div class="g-cap">our adventure</div>
+    <div class="g-item reveal reveal-delay-4 g-w2 g-h2">
+      <img src="assets/images/lovely.jpeg" alt="Memory">
+      <div class="g-cap">💖 Lovely</div>
     </div>
 
-    <div class="g-item g-more reveal reveal-delay-5">
-      + add another memory<br>copy any tile above
+    <div class="g-item reveal reveal-delay-4 g-w2 g-h2">
+      <img src="assets/images/loveeet.jpeg" alt="Memory">
+      <div class="g-cap">🌹 Simply Beautiful</div>
     </div>
 
   </div>
-  <p style="text-align:center; margin-top:26px; font-size:12px; color:#a08e7d;" class="label"></p>
 </section>
 
 <section class="wrap" style="padding:20px 24px 100px;">
@@ -586,17 +633,17 @@
     <div class="tl-item reveal">
       <div class="tl-dot"></div>
       <p class="tl-year label">the beginning</p>
-      <p style="margin-top:4px;">"We should go for Vibes Barn,have you been there before?" 'no, ... how bout you?'-no...., Ok let's go.. best party of my life, not because the music or party was lit, ofcourse they were, but that was the first time I was that close to you... loveet till this day</p>
+      <p style="margin-top:4px;">"We should go for Vibes Barn, have you been there before?" 'no, ... how bout you?'-no...., Ok let's go.. best party of my life, not because the music or party was lit, ofcourse they were, but that was the first time I was that close to you... loveet till this day</p>
     </div>
     <div class="tl-item reveal reveal-delay-1">
       <div class="tl-dot"></div>
       <p class="tl-year label">A moment I can't forget</p>
-      <p style="margin-top:4px;">So many beautiful memories with you....., all seem to have a story, I think the best for me is when I would see you again... </p>
+      <p style="margin-top:4px;">So many beautiful memories with you....., all seem to have a story, I think the best for me is when I would see you again...</p>
     </div>
     <div class="tl-item reveal reveal-delay-2">
       <div class="tl-dot"></div>
       <p class="tl-year label">today</p>
-      <p style="margin-top:4px;">My best gift, I thank grateful to share in your joy as you turn a year older....</p>
+      <p style="margin-top:4px;">My best gift, I am grateful to share in your joy as you turn a year older....</p>
     </div>
   </div>
 </section>
@@ -609,16 +656,16 @@
       <p>
         There are beautiful women, and then there are women whose beauty goes far beyond what the eyes can see.
 
-You're effortlessly beautiful, but what truly captivates me is the person behind that beauty. Your intelligence, your discipline, your ambition, your perspective on life, and the way you carry yourself with grace and confidence make you stand out in every room you enter.
+        You're effortlessly beautiful, but what truly captivates me is the person behind that beauty. Your intelligence, your discipline, your ambition, your perspective on life, and the way you carry yourself with grace and confidence make you stand out in every room you enter.
 
-You have an aura that's impossible to ignore, a smile that brightens days, and a heart that inspires the people fortunate enough to know you. You chase your dreams with purpose, you uplift those around you, and you make excellence look effortless.
+        You have an aura that's impossible to ignore, a smile that brightens days, and a heart that inspires the people fortunate enough to know you. You chase your dreams with purpose, you uplift those around you, and you make excellence look effortless.
 
-I'll always be one of your biggest supporters, cheering you on through every milestone and every victory. The world is lucky to have someone like you, I am blessed to share my life with you and I'm grateful that I get to witness your journey and growth.
+        I'll always be one of your biggest supporters, cheering you on through every milestone and every victory. The world is lucky to have someone like you, I am blessed to share my life with you and I'm grateful that I get to witness your journey and growth.
 
-Keep shining. The best is still ahead of you. ❤️
+        Keep shining. The best is still ahead of you. ❤️
       </p>
       <p style="border-left:3px solid var(--gold); padding-left:20px; font-style:italic; color:#5a4a3f;">
-        My Caramel Toppings, The most beautiful woman in my world. I love the person you are and the person you are becoming..... It's beautiful..  <br> I wish you can see you from my eyes
+        My Caramel Toppings, The most beautiful woman in my world. I love the person you are and the person you are becoming..... It's beautiful.. <br> I wish you could see you from my eyes
       </p>
       <p>
         I never thought I would be this excited about someone else's birthday than I would be about mine, and to think that mine was just seven days ago. I love you more than anything else and anyone else
@@ -630,12 +677,10 @@ Keep shining. The best is still ahead of you. ❤️
   </div>
 </section>
 
-
-
 <footer style="padding:56px 24px; text-align:center;">
   <div class="seal" style="width:56px; height:56px; font-size:1.1rem; margin-bottom:18px;">&amp;</div>
   <p class="label" style="font-size:11px;">made with love, for Bonnie</p>
-  <p style="font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold-light); margin-top:8px; font-size:1.2rem;">Happy Birthday <span class="heart-beat">♥</span></p>
+  <p style="font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold-light); margin-top:8px; font-size:1.2rem;">Happy Birthday my Queen <span class="heart-beat">♥</span></p>
 </footer>
 
 <script>
@@ -670,7 +715,7 @@ Keep shining. The best is still ahead of you. ❤️
     heartField.appendChild(h);
   }
 
-  // ===== SPARKLES - NEW =====
+  // ===== SPARKLES =====
   const sparkleContainer = document.getElementById('sparkleContainer');
   for (let i = 0; i < 12; i++) {
     const s = document.createElement('div');
@@ -684,7 +729,7 @@ Keep shining. The best is still ahead of you. ❤️
     sparkleContainer.appendChild(s);
   }
 
-  // ===== PROGRESS BAR - NEW =====
+  // ===== PROGRESS BAR =====
   const progressBar = document.getElementById('progressBar');
   window.addEventListener('scroll', () => {
     const scrollTop = window.scrollY;
@@ -734,7 +779,6 @@ Keep shining. The best is still ahead of you. ❤️
     }
   }
 
-  // ===== SPARKLE BURST - NEW =====
   function burstSparkles(x, y) {
     const colors = ['#D9BD7C', '#B4892F', '#FFF8E7', '#F3E9DA'];
     for (let i = 0; i < 20; i++) {
