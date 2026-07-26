@@ -441,6 +441,18 @@
       font-size:.8rem;
       padding:12px 14px;
     }
+    
+    /* ===== MOBILE ONLY: INCREASE VIDEO HEIGHT ===== */
+    .g-item video {
+      height: 320px !important;
+      object-fit: cover;
+    }
+    .g-item {
+      grid-auto-rows: 340px;
+    }
+    .g-h2, .g-h3 {
+      grid-row: span 2;
+    }
   }
 
   .letter-wrap{ background:var(--wine); padding:90px 20px; }
